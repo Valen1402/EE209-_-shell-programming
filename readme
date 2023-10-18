@@ -1,14 +1,42 @@
-Minh Quang Nguyen
-ID: 20190723
-ASSIGNMENT 5
+Author: Minh Quang NGUYEN
+Grade: 90
+Project Detailed Description: https://ee209-2020-fall.github.io/assignment/assignment5/assignment5.html
 
-Description:
-https://ee209-2020-fall.github.io/assignment/assignment5/assignment5.html
+I. Overview
+After start-up processing, the program repeatedly performs these actions:
 
-Completed:
--
-- 
+- Print to the standard output stream a prompt consisting of a percent sign followed by a space.
+- Read a line from the standard input stream.
+- Lexically analyze the line to form an array of tokens.
+- Syntactically analyze (i.e. parse) the token array to form a command.
+- Execute the command.
 
-Unfinished:
--
--
+II. Features
+1. Lexical Analysis
+* Formally, a token should consist of a sequence of non-white-space characters that is separated from other tokens by white-space characters. There should be two exceptions:
+  - The special character '|' should form separate token.
+  - Strings enclosed in double quotes (") should form part or all of a single token. Special characters inside of strings should not form separate tokens.
+
+* Syntactic Analysis:
+The '|' token indicate that the immediate token after the '|' is another command. The program redirects the standard output of the command on the left to the standard input of the command on the right. If there's no following token after '|', the program prints out an appropriate error message. There can be multiple pipe operators in a single command.
+
+2. Execution
+Intepret 4 shell build-in command: setenv var [value, unsetenv var, cd [dir], exit.
+If the command is not a built-in command, then the program considers the command name to be the name of a file that contains code to be executed. The program then forks a child process and pass the file name, along with its arguments, to the execvp system call. If the attempt to execute the file fails, then the program prints an error message indicating the reason for the failure.
+
+3. Process Handling
+All child processes forked by the program run in the foreground. THe program does not support background processes.
+Wait is called for every child that has been created.
+
+4. Signal Handling
+When the user types Ctrl-c, Linux sends a SIGINT signal to the parent process and its children. Upon receiving a SIGINT signal:
+  - The parent process should ignore the SIGINT signal.
+  - A child process should not necessarily ignore the SIGINT signal. That is, unless the child process itself (beyond the control of parent process) has installed a handler for SIGINT signals, the child process should terminate.
+
+5. Error Handling
+The program handles an erroneous line gracefully by rejecting the line and writing a descriptive error message to the standard error stream, beginning with "programName: "
+
+6. Redirection of stdin and stdout
+Handling '<' and '>' as seperate token in lexical analysis.
+  - The '<' token should indicate that the following token is a name of a file. The program redirects the command's standard input to that file.
+  - The '>' token should indicate that the following token is a name of a file. THe program redirects the command's standard output to that file.
